@@ -1,0 +1,56 @@
+body, #rendered-md {
+  background: __NOTE_BG_LIGHT__ !important; color: #1F1E1D !important;
+  font-family: __NOTE_FONT__ !important;
+  font-size: 16px !important; line-height: 1.65 !important;
+}
+#rendered-md { padding: 20px 28px 120px !important; }
+#rendered-md h1, #rendered-md h2, #rendered-md h3, #rendered-md h4 {
+  font-family: __NOTE_FONT__ !important;
+  font-weight: 600 !important; color: #1F1E1D !important; border-bottom: none !important;
+}
+#rendered-md h1 { font-size: 1.6em !important; }
+#rendered-md h2 { font-size: 1.32em !important; }
+#rendered-md h3 { font-size: 1.12em !important; }
+#rendered-md a { color: #2F5E9E !important; }
+#rendered-md blockquote { border-left: 3px solid #D6D3CB !important; background: transparent !important; color: #5E5D59 !important; opacity: 1 !important; }
+#rendered-md code, #rendered-md pre { font-family: "Cascadia Code", Consolas, monospace !important; font-size: 14px !important; }
+#rendered-md code { background: #EFEDE7 !important; border: none !important; border-radius: 5px !important; color: #8A2E3B !important; }
+#rendered-md pre, #rendered-md pre code { background: #F1EFE9 !important; border: none !important; border-radius: 10px !important; color: #1F1E1D !important; }
+#rendered-md th { background: #F1EFE9 !important; }
+#rendered-md td, #rendered-md th { border-color: #E5E3DC !important; padding: 6px 10px !important; }
+#rendered-md img { border-radius: 10px; }
+#rendered-md hr { border: none !important; border-top: 1px solid #E5E3DC !important; }
+#rendered-md input[type="checkbox"] {
+  -webkit-appearance: none !important; appearance: none !important; width: 17px; height: 17px;
+  border: 1.5px solid #A9A69E; border-radius: 50%; vertical-align: -3px; position: relative; background: #fff;
+}
+#rendered-md input[type="checkbox"]:checked { background: #2A2926; border-color: #2A2926; }
+#rendered-md input[type="checkbox"]:checked::after {
+  content: ""; position: absolute; left: 5px; top: 2px; width: 4px; height: 8px;
+  border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+#rendered-md mark { background: #F3E3A6 !important; }
+::selection { background: #D6DDE7 !important; }
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+  body, #rendered-md { background: __NOTE_BG_DARK__ !important; color: #ECECEC !important; }
+  #rendered-md h1, #rendered-md h2, #rendered-md h3, #rendered-md h4 { color: #ECECEC !important; }
+  #rendered-md a { color: #8AB4F8 !important; }
+  #rendered-md blockquote { border-left-color: #4A4A4A !important; color: #B8B8B8 !important; }
+  #rendered-md code { background: #2C2C2C !important; color: #F0A3AE !important; }
+  #rendered-md pre, #rendered-md pre code { background: #262626 !important; color: #ECECEC !important; }
+  #rendered-md th { background: #262626 !important; }
+  #rendered-md td, #rendered-md th { border-color: #3A3A3A !important; }
+  #rendered-md hr { border-top-color: #3A3A3A !important; }
+  #rendered-md input[type="checkbox"] { background: #1E1E1E; border-color: #6E6E6E; }
+  #rendered-md input[type="checkbox"]:checked { background: #ECECEC; border-color: #ECECEC; }
+  #rendered-md input[type="checkbox"]:checked::after { border-color: #1E1E1E; }
+  #rendered-md mark { background: #6B5A1E !important; color: #fff !important; }
+  ::selection { background: #3B4A60 !important; }
+}
+
+/* Editor visual (texto enriquecido): Enter da una línea normal, sin hueco grande,
+   así no hace falta pulsar Enter dos veces (que es lo que genera los &nbsp;) */
+body.mce-content-body p { margin-top: 0 !important; margin-bottom: 0.25em !important; }
+body.mce-content-body { font-family: __NOTE_FONT__ !important; }

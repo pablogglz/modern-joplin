@@ -1,0 +1,20 @@
+/* Modern Joplin - Features — ventana "Personalizar barra de botones" */
+html, body { height: 100%; margin: 0; }
+.mt-wrap { font-family: var(--joplin-font-family, system-ui, sans-serif); font-size: 13px; box-sizing: border-box; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 4px 6px; }
+.mt-help { margin: 0 0 10px 0; opacity: .75; line-height: 1.4; }
+.mt-list { flex: 1 1 auto; min-height: 120px; overflow-y: auto; overflow-x: hidden; border: 1px solid rgba(127,127,127,.25); border-radius: 10px; padding: 4px; }
+.mt-row { display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 7px; background: transparent; cursor: grab; }
+.mt-row:hover { background: rgba(127,127,127,.10); }
+.mt-row.dragging { opacity: .4; }
+.mt-row.drop-before { box-shadow: inset 0 2px 0 rgba(127,127,127,.8); }
+.mt-row.drop-after { box-shadow: inset 0 -2px 0 rgba(127,127,127,.8); }
+.mt-grip { opacity: .45; font-size: 12px; letter-spacing: -2px; }
+.mt-name { flex: 1 1 auto; min-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-row.st-hide .mt-name { opacity: .45; text-decoration: line-through; }
+.mt-row.st-menu .mt-name { font-style: italic; }
+.mt-seg { display: flex; flex: none; border: 1px solid rgba(127,127,127,.35); border-radius: 7px; overflow: hidden; }
+.mt-seg button { border: none; background: transparent; color: inherit; font: inherit; font-size: 12px; padding: 3px 8px; cursor: pointer; }
+.mt-seg button + button { border-left: 1px solid rgba(127,127,127,.35); }
+.mt-seg button.on { background: rgba(127,127,127,.25); font-weight: 600; }
+.mt-help { flex: none; }
+@media (max-width: 420px) { .mt-row { flex-wrap: wrap; } .mt-seg { margin-left: 22px; } }

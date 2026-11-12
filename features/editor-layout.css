@@ -1,0 +1,23 @@
+/* Modern Joplin - Features — cabecera de la nota y barra de botones adaptables */
+
+/* ---- 1. Título de la nota siempre arriba, en su propia fila y a todo el ancho ---- */
+.note-title-wrapper { flex-direction: column !important; align-items: stretch !important; height: auto !important; }
+.note-title-wrapper > .title-input { width: 100% !important; max-width: none !important; flex: none !important; }
+
+/* ---- 2. Fila de fecha, idioma, campanita y botones: si no cabe, pasa a varias filas ---- */
+.note-title-info-group { flex-wrap: wrap !important; align-items: center !important; row-gap: 2px; height: auto !important; min-width: 0 !important; width: 100% !important; }
+.note-title-info-group > .editor-toolbar { flex-wrap: wrap !important; height: auto !important; min-width: 0 !important; margin-left: auto !important; }
+.note-title-info-group > .editor-toolbar > .group { flex-wrap: wrap !important; height: auto !important; }
+
+/* ---- 3. Barra de botones del editor Markdown: los botones bajan de fila en vez de cortarse ---- */
+div:has(> #CodeMirrorToolbar) { height: auto !important; container-type: inline-size; }
+#CodeMirrorToolbar { height: auto !important; min-height: 39px; flex-wrap: nowrap !important; align-items: flex-start !important; overflow: visible !important; }
+#CodeMirrorToolbar > .group { flex-wrap: wrap !important; height: auto !important; row-gap: 2px; }
+#CodeMirrorToolbar > .group:nth-child(2) { flex: 1 1 auto !important; min-width: 0 !important; }
+#CodeMirrorToolbar > .group:first-child, #CodeMirrorToolbar > .group:last-child { flex: none !important; }
+#CodeMirrorToolbar > .spacer { flex: 0 0 4px !important; min-width: 0 !important; }
+
+/* ---- Editor muy estrecho: menos margen a los lados de la barra ---- */
+@container (max-width: 420px) {
+	#CodeMirrorToolbar { padding-left: 6px !important; padding-right: 6px !important; }
+}

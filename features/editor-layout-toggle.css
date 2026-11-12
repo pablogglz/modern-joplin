@@ -1,0 +1,8 @@
+
+/* ---- 4. Botón Markdown / editor visual siempre debajo de atrás / adelante ---- */
+div:has(> #CodeMirrorToolbar) { height: auto !important; }
+#CodeMirrorToolbar { height: auto !important; overflow: visible !important; display: grid !important; grid-template-columns: auto minmax(0, 1fr); column-gap: 4px; }
+#CodeMirrorToolbar > .group:first-child { grid-column: 1; grid-row: 1; }
+#CodeMirrorToolbar > .group:last-child { grid-column: 1; grid-row: 2; justify-self: start; }
+#CodeMirrorToolbar > .group:nth-child(2) { grid-column: 2; grid-row: 1 / span 2; }
+#CodeMirrorToolbar > .spacer { display: none !important; }

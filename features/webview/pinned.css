@@ -1,0 +1,50 @@
+/* Modern Joplin - Features — sección "Fijadas" encima de la lista de notas */
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+	background: var(--mn-bar);
+	color: var(--mn-text);
+	font-family: var(--mn-font);
+	font-size: 13px;
+	user-select: none;
+	-webkit-user-select: none;
+}
+.mp-wrap { display: flex; flex-direction: column; height: 100%; box-sizing: border-box; padding: 4px 8px 4px 8px; border-bottom: 1px solid var(--mn-border); }
+.mp-section + .mp-section { margin-top: 6px; }
+.mp-head {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 6px 4px 6px;
+	font-size: 11.5px;
+	font-weight: 600;
+	color: var(--mn-text3);
+}
+.mp-head svg { width: 12px; height: 12px; }
+.mp-list { flex: 1 1 auto; overflow-y: auto; scrollbar-width: thin; }
+.mp-item {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 8px;
+	border-radius: 8px;
+	cursor: default;
+}
+.mp-item:hover { background: var(--mn-hover); }
+.mp-item.active { background: var(--mn-sel); }
+.mp-title { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.mp-date { flex: none; font-size: 11.5px; color: var(--mn-text3); }
+.mp-btn {
+	display: flex; align-items: center; justify-content: center; flex: none;
+	width: 20px; height: 20px; border-radius: 5px; opacity: 0; color: var(--mn-text2);
+}
+.mp-btn svg { width: 13px; height: 13px; }
+.mp-item:hover .mp-btn { opacity: .7; }
+.mp-btn:hover { opacity: 1 !important; background: var(--mn-hover2); }
+.mp-item:hover .mp-date { display: none; }
+.mp-item.dragging { opacity: .45; }
+.mp-item.drop-before { box-shadow: inset 0 2px 0 var(--mn-drop); }
+.mp-item.drop-after { box-shadow: inset 0 -2px 0 var(--mn-drop); }
