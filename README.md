@@ -2,6 +2,10 @@
 
 Two plugins for Joplin desktop (3.0 or later).
 
+| Light | Dark |
+|---|---|
+| ![Modern Joplin in light mode](docs/screenshot-light.png) | ![Modern Joplin in dark mode](docs/screenshot-dark.png) |
+
 | Folder | Plugin | What it does |
 |---|---|---|
 | `features/` | **Modern Joplin - Features** (`local.modernjoplin.features`) | Tabs, pinned notes (per notebook and global, also mirrored as tags for mobile), today's daily note (Ctrl+Alt+D), note outline, an Aa paragraph-style button, a customizable editor toolbar, and remembering your position in each note. |
