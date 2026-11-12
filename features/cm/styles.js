@@ -1,5 +1,5 @@
-/* Modern Joplin - Features — estilos de párrafo para el editor Markdown (CodeMirror 6) */
-// Cambia las líneas seleccionadas (o la línea del cursor) al estilo elegido en la ventanita "Aa".
+/* Modern Joplin - Features — paragraph styles for the Markdown editor (CodeMirror 6) */
+// Changes the selected lines (or the cursor's line) to the style chosen in the "Aa" popup.
 const PREFIX = /^(\s*)(#{1,6}[ \t]+|[-*+][ \t]+\[([ xX])\][ \t]+|[-*+][ \t]+|\d+[.)][ \t]+|>[ \t]?)?/;
 const FENCE = /^\s*(```|~~~)/;
 
@@ -8,7 +8,7 @@ function restyleLine(text, style, index) {
 	const indent = m[1] || '';
 	const checked = m[3] && m[3] !== ' ';
 	const body = text.slice(m[0].length);
-	if (!body.trim() && style !== 'body') return text; // líneas vacías: no se tocan
+	if (!body.trim() && style !== 'body') return text; // empty lines are left alone
 	switch (style) {
 		case 'title': return '# ' + body;
 		case 'heading': return '## ' + body;
@@ -28,7 +28,7 @@ function setStyle(view, style) {
 	for (const range of state.selection.ranges) {
 		const first = state.doc.lineAt(range.from);
 		let last = state.doc.lineAt(range.to);
-		// Si la selección acaba justo al principio de una línea, esa línea no cuenta
+		// If the selection ends right at the start of a line, that line doesn't count
 		if (last.number > first.number && range.to === last.from) last = state.doc.line(last.number - 1);
 		const lines = [];
 		for (let n = first.number; n <= last.number; n++) if (!seen.has(n)) { seen.add(n); lines.push(state.doc.line(n)); }
@@ -37,7 +37,7 @@ function setStyle(view, style) {
 		if (style === 'mono') {
 			const top = lines[0], bottom = lines[lines.length - 1];
 			if (lines.length >= 2 && FENCE.test(top.text) && FENCE.test(bottom.text)) {
-				// Ya es un bloque de código: quitarlo
+				// Already a code block: remove it
 				if (lines.length === 2) changes.push({ from: top.from, to: bottom.to });
 				else {
 					changes.push({ from: top.from, to: top.to + 1 });
@@ -61,10 +61,10 @@ function setStyle(view, style) {
 	return true;
 }
 
-// ---- Recordar por dónde ibas: línea de arriba del todo de la vista ----
+// ---- Remember where you were: the topmost line of the view ----
 function topLine(view) {
 	const block = view.lineBlockAtHeight(view.scrollDOM.scrollTop + 4);
-	return view.state.doc.lineAt(block.from).number - 1; // 0 = primera línea
+	return view.state.doc.lineAt(block.from).number - 1; // 0 = first line
 }
 
 function scrollToLineTop(view, line) {
@@ -78,20 +78,20 @@ module.exports = {
 	default: function (context) {
 		return {
 			plugin: function (codeMirrorWrapper) {
-				if (!codeMirrorWrapper.cm6) return; // solo el editor Markdown moderno
+				if (!codeMirrorWrapper.cm6) return; // modern Markdown editor only
 				const view0 = codeMirrorWrapper.editor;
 
-				// Avisar al plugin de la línea visible (con pausa, para no enviar mil mensajes al hacer scroll)
+				// Tell the plugin the visible line (debounced, so scrolling doesn't send a flood of messages)
 				let timer = null;
 				view0.scrollDOM.addEventListener('scroll', () => {
 					clearTimeout(timer);
 					timer = setTimeout(() => {
 						const view = codeMirrorWrapper.editor;
-						try { context.postMessage({ type: 'scroll', line: topLine(view), lines: view.state.doc.lines }); } catch (e) { /* plugin no disponible */ }
+						try { context.postMessage({ type: 'scroll', line: topLine(view), lines: view.state.doc.lines }); } catch (e) { /* plugin not available */ }
 					}, 400);
 				}, { passive: true });
 
-				// Volver a la línea guardada en cuanto el editor tenga cargada la nota correcta
+				// Go back to the saved line as soon as the editor has loaded the right note
 				codeMirrorWrapper.registerCommand('modernJoplinRestoreScroll', (line, expectedLines) => {
 					const started = Date.now();
 					const tryRestore = () => {
@@ -102,7 +102,7 @@ module.exports = {
 						}
 						scrollToLineTop(view, line);
 						const wanted = view.scrollDOM.scrollTop;
-						// Por si Joplin vuelve a subir la vista al terminar de cargar: reaplicar solo si está arriba del todo
+						// In case Joplin scrolls the view back up after loading: reapply only if it's at the very top
 						for (const ms of [200, 600]) {
 							setTimeout(() => { if (view.scrollDOM.scrollTop === 0 && wanted > 0) scrollToLineTop(view, line); }, ms);
 						}
@@ -111,7 +111,7 @@ module.exports = {
 					return true;
 				});
 				codeMirrorWrapper.registerCommand('modernJoplinSetStyle', (style) => setStyle(codeMirrorWrapper.editor, style));
-				// Índice (Outline): llevar el cursor a una línea y ponerla arriba del todo
+				// Outline: move the cursor to a line and bring it to the top
 				codeMirrorWrapper.registerCommand('modernJoplinScrollToLine', (line) => {
 					const view = codeMirrorWrapper.editor;
 					const doc = view.state.doc;

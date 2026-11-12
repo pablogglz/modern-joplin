@@ -1,3 +1,3 @@
 
-/* ---- 5. Ocultar la fecha de Joplin junto al título (las fechas de creación y modificación están en la barra de pestañas) ---- */
+/* ---- 5. Hide Joplin's date next to the title (created and modified dates are shown in the tab bar) ---- */
 .note-title-info-group > .updated-time-label { display: none !important; }

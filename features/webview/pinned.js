@@ -1,4 +1,4 @@
-/* Modern Joplin - Features — interacción de las secciones "Fijadas globales" y "Fijadas" */
+/* Modern Joplin - Features — interaction for the "Pinned (global)" and "Pinned" sections */
 /* global webviewApi */
 (function () {
 	let drag = null; // { id, section }
@@ -6,7 +6,7 @@
 	const post = (msg) => webviewApi.postMessage(msg);
 	const clearDrop = () => document.querySelectorAll('.drop-before, .drop-after').forEach(x => x.classList.remove('drop-before', 'drop-after'));
 
-	// Clic: abrir la nota, o × para desfijarla
+	// Click: open the note, or × to unpin it
 	document.addEventListener('click', (e) => {
 		const item = itemOf(e.target);
 		if (!item) return;
@@ -19,7 +19,7 @@
 		post({ type: 'open', id: item.dataset.id });
 	});
 
-	// Arrastrar para reordenar (solo dentro de la misma sección)
+	// Drag to reorder (only within the same section)
 	document.addEventListener('dragstart', (e) => {
 		const item = itemOf(e.target);
 		if (!item) return;

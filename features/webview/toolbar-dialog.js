@@ -1,4 +1,4 @@
-/* Modern Joplin - Features — ventana "Personalizar barra de botones": arrastrar para ordenar y elegir estado */
+/* Modern Joplin - Features — "Customize toolbar" window: drag to reorder and choose a state */
 (function () {
 	const list = document.querySelector('.mt-list');
 	const input = document.querySelector('input[name="config"]');

@@ -1,4 +1,4 @@
-/* Modern Joplin - Features — interacción del índice (Outline) */
+/* Modern Joplin - Features — outline interaction */
 /* global webviewApi */
 (function () {
 	document.addEventListener('click', (e) => {

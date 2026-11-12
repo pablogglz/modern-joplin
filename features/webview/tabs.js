@@ -1,4 +1,4 @@
-/* Modern Joplin - Features — interacción de la barra de pestañas */
+/* Modern Joplin - Features — tab bar interaction */
 /* global webviewApi */
 (function () {
 	let dragId = null;
@@ -6,7 +6,7 @@
 	const tabOf = (el) => el && el.closest ? el.closest('.mn-tab') : null;
 	const clearDrop = () => document.querySelectorAll('.drop-before, .drop-after').forEach(x => x.classList.remove('drop-before', 'drop-after'));
 
-	// Clic: abrir la nota, o pulsar un botón (fijar / cerrar)
+	// Click: open the note, or press a button (pin / close)
 	document.addEventListener('click', (e) => {
 		const tab = tabOf(e.target);
 		if (!tab) return;
@@ -19,16 +19,16 @@
 		post({ type: 'open', id: tab.dataset.id });
 	});
 
-	// Doble clic
+	// Double click
 	document.addEventListener('dblclick', (e) => {
 		const tab = tabOf(e.target);
 		if (!tab || e.target.closest('[data-action]')) return;
-		// Provisional -> dejarla abierta; las demás -> fijar / desfijar
+		// Preview -> keep it open; the others -> pin / unpin
 		const type = tab.classList.contains('temp') ? 'keep' : tab.classList.contains('pinned') ? 'unpin' : 'pin';
 		post({ type, id: tab.dataset.id });
 	});
 
-	// Botón central: cerrar (solo pestañas no fijadas; lo decide el plugin)
+	// Middle click: close (only unpinned tabs; the plugin decides)
 	document.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault(); });
 	document.addEventListener('auxclick', (e) => {
 		if (e.button !== 1) return;
@@ -36,7 +36,7 @@
 		if (tab) { e.preventDefault(); post({ type: 'close', id: tab.dataset.id }); }
 	});
 
-	// Arrastrar para reordenar
+	// Drag to reorder
 	document.addEventListener('dragstart', (e) => {
 		const tab = tabOf(e.target);
 		if (!tab) return;
@@ -54,7 +54,7 @@
 	const fromNoteList = (e) => !dragId && e.dataTransfer && Array.from(e.dataTransfer.types || []).includes(NOTE_MIME);
 	document.addEventListener('dragover', (e) => {
 		if (fromNoteList(e)) {
-			// Notas arrastradas desde la lista de Joplin: se abrirán en pestañas nuevas al soltar
+			// Notes dragged from Joplin's list: they'll open in new tabs when dropped
 			e.preventDefault();
 			e.dataTransfer.dropEffect = 'copy';
 			clearDrop();
@@ -97,7 +97,7 @@
 		dragId = null;
 	});
 
-	// Rueda del ratón: desplazar la barra en horizontal
+	// Mouse wheel: scroll the bar horizontally
 	document.addEventListener('wheel', (e) => {
 		const bar = document.querySelector('.mn-tabs');
 		if (bar && Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
@@ -106,7 +106,7 @@
 		}
 	}, { passive: false });
 
-	// Mantener visible la pestaña activa tras cada actualización
+	// Keep the active tab visible after each update
 	const reveal = () => {
 		const active = document.querySelector('.mn-tab.active');
 		if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest' });

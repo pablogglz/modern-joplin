@@ -3,18 +3,18 @@
   --c-font-note: __NOTE_FONT__;
   --c-font-mono: "Cascadia Code", Consolas, monospace;
 
-  --c-bg:        #FAFAFA;   /* editor (marfil cálido) */
-  --c-list:      #FAFAFA;   /* lista de notas */
-  --c-sidebar:   #FAFAFA;   /* barra lateral */
-  --c-band:      #E6E4DD;   /* franja entre libretas */
+  --c-bg:        #FAFAFA;   /* editor (warm ivory) */
+  --c-list:      #FAFAFA;   /* note list */
+  --c-sidebar:   #FAFAFA;   /* sidebar */
+  --c-band:      #E6E4DD;   /* strip between notebooks */
   --c-border:    #F3F3F3;
   --c-border-2:  #D9D7CF;
   --c-text:      #1F1E1D;
   --c-text-2:    #5E5D59;
   --c-text-3:    #85837D;
-  --c-sel:       #E1E1E1;   /* selección */
+  --c-sel:       #E1E1E1;   /* selection */
   --c-hover:     #EDEDED;
-  --c-dark:      #2A2926;   /* botón principal, casillas */
+  --c-dark:      #2A2926;   /* primary button, checkboxes */
   --c-icon:      #4A4945;
   --c-guide:     rgba(31, 30, 29, 0.10);
   --c-text-sel:  #D6DDE7;
@@ -56,7 +56,7 @@
 
 body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg) !important; }
 
-/* ---------- Barras de desplazamiento finas ---------- */
+/* ---------- Thin scrollbars ---------- */
 ::-webkit-scrollbar { width: 8px !important; height: 8px !important; }
 ::-webkit-scrollbar-track { background: transparent !important; }
 ::-webkit-scrollbar-thumb {
@@ -67,7 +67,7 @@ body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg)
 }
 ::-webkit-scrollbar-thumb:hover { background-color: rgba(0, 0, 0, 0.26) !important; }
 
-/* ---------- Paneles ---------- */
+/* ---------- Panels ---------- */
 .rli-sideBar, .rli-sideBar > div, .sidebar { background: var(--c-sidebar) !important; color: var(--c-text) !important; }
 .rli-sideBar { border-right: 1px solid var(--c-border) !important; }
 .rli-noteList, .rli-noteList > div, .rli-noteList .note-list, .rli-noteList .notes { background: var(--c-list) !important; }
@@ -77,7 +77,7 @@ body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg)
 .cm-editor, .cm-editor .cm-scroller { background: var(--c-bg) !important; }
 .resizableLayoutItem { border-color: var(--c-border) !important; }
 
-/* ---------- Barra lateral ---------- */
+/* ---------- Sidebar ---------- */
 .sidebar { padding: 8px 10px 0 10px !important; }
 
 .sidebar .list-item-wrapper {
@@ -88,7 +88,7 @@ body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg)
   border-radius: 0 !important;
   background-color: transparent !important;
   outline: none !important;
-  /* líneas de jerarquía, discretas */
+  /* hierarchy lines, subtle */
   background-image: repeating-linear-gradient(to right, var(--c-guide) 0 1px, transparent 1px 16px) !important;
   background-repeat: no-repeat !important;
   background-position: 19px 0 !important;
@@ -98,7 +98,7 @@ body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg)
 .sidebar .sidebar-header-container,
 .sidebar .list-item-depth-1 { background-image: none !important; }
 
-/* Hover y selección: gris suave redondeado, como en Claude */
+/* Hover and selection: soft rounded gray */
 .sidebar .list-item-wrapper::before {
   content: "";
   position: absolute;
@@ -109,7 +109,7 @@ body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg)
 .sidebar .list-item-wrapper.-highlight-on-hover:not(.-selected):hover::before { background: var(--c-hover); }
 .sidebar .list-item-wrapper.-selected::before { background: var(--c-sel); }
 
-/* Texto */
+/* Text */
 .sidebar .list-item-wrapper .list-item,
 .sidebar .list-item-wrapper .title {
   font-family: var(--c-font) !important;
@@ -124,7 +124,7 @@ body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg)
 .sidebar .list-item-wrapper.-selected .title,
 .sidebar .list-item-wrapper.-selected .list-item { font-weight: 600 !important; color: var(--c-text) !important; }
 
-/* Libretas principales: negrita, icono algo mayor */
+/* Top-level notebooks: bold, slightly larger icon */
 .sidebar .list-item-depth-1 .title {
   font-size: calc(var(--mj-side-size, 14px) + 0.5px) !important;
   font-weight: 650 !important;
@@ -132,7 +132,7 @@ body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg)
 }
 .sidebar .list-item-depth-1 .list-item > div:first-child { transform: scale(1.08); opacity: 1 !important; }
 
-/* Espacio y franja antes de cada libreta principal */
+/* Space and strip before each top-level notebook */
 .sidebar .list-item-wrapper:not(.all-notes):not(.sidebar-header-container) + .list-item-depth-1 {
   height: calc(var(--mj-side-row, 32px) + 14px) !important;
   padding-top: 14px !important;
@@ -148,7 +148,7 @@ body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg)
 }
 .sidebar .list-item-wrapper:not(.all-notes):not(.sidebar-header-container) + .list-item-depth-1::before { top: 15px !important; }
 
-/* Cabeceras de sección */
+/* Section headers */
 .sidebar .sidebar-header-container span,
 .sidebar .sidebar-header-container {
   font-family: var(--c-font) !important;
@@ -160,14 +160,14 @@ body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg)
 }
 .sidebar .sidebar-header-container i { display: none !important; }
 
-/* Iconos finos en gris oscuro */
+/* Thin dark gray icons */
 .sidebar .fa-folder, .sidebar .fa-folder-open, .sidebar .icon-notes { color: var(--c-icon) !important; opacity: 1 !important; }
 .sidebar .list-item-depth-3 .fa-folder, .sidebar .list-item-depth-4 .fa-folder,
 .sidebar .list-item-depth-5 .fa-folder { color: #6E6D68 !important; }
 .sidebar .sidebar-expand-link, .sidebar .sidebar-expand-icon,
 .sidebar-header-button, .sidebar-header-button i { color: var(--c-text-3) !important; }
 
-/* Contadores a la derecha */
+/* Counters on the right */
 .sidebar .list-item { flex: 1 1 auto !important; min-width: 0; }
 .sidebar .note-count-label {
   margin-left: auto !important;
@@ -189,7 +189,7 @@ body, .rli-root { font-family: var(--c-font) !important; background: var(--c-bg)
 .sidebar-sync-button span, .sidebar-sync-button .icon { color: inherit !important; }
 #sync-report, #sync-report * { color: var(--c-text-3) !important; }
 
-/* ---------- Cabecera de la lista de notas ---------- */
+/* ---------- Note list header ---------- */
 div:has(> .new-note-todo-buttons):has(> .search-and-sort) {
   flex-direction: column !important;
   align-items: stretch !important;
@@ -240,7 +240,7 @@ div:has(> .new-note-todo-buttons):has(> .search-and-sort) > .search-and-sort {
 .sort-order-field-button .icon, .sort-order-reverse-button .icon { color: var(--c-text-2) !important; }
 .sort-order-field-button, .sort-order-reverse-button { background: transparent !important; border: none !important; }
 
-/* ---------- Lista de notas ---------- */
+/* ---------- Note list ---------- */
 .note-list-item-wrapper { background: transparent !important; border: none !important; padding: 2px 8px !important; }
 .note-list-item-wrapper .note-list-item { height: 100% !important; }
 .note-list-item-wrapper .note-list-item > .content {
@@ -298,7 +298,7 @@ div:has(> .new-note-todo-buttons):has(> .search-and-sort) > .search-and-sort {
 .updated-time-label { color: var(--c-text-3) !important; font-size: 12px !important; }
 .editor-toolbar { background: transparent !important; border: none !important; }
 #CodeMirrorToolbar { padding: 2px 24px !important; border-bottom: none !important; opacity: .75; }
-/* Línea bajo la barra de botones: igual que la que separa la lista del editor (va en el contenedor, que no está atenuado) */
+/* Line under the toolbar: same as the one separating the list from the editor (it's on the container, which isn't dimmed) */
 div:has(> #CodeMirrorToolbar) { border-bottom: 2px solid var(--c-border) !important; }
 #CodeMirrorToolbar:hover { opacity: 1; }
 .toolbar-button { border-radius: 7px !important; }
@@ -355,7 +355,7 @@ div:has(> #CodeMirrorToolbar) { border-bottom: 2px solid var(--c-border) !import
 .cm-editor .cm-md-completed-item { opacity: .5 !important; }
 .cm-editor .cm-highlighted, .cm-editor .cm-rm-highlight { background: #F3E3A6 !important; border-radius: 3px; }
 
-/* Casillas redondas */
+/* Round checkboxes */
 .cm-editor input[type="checkbox"] {
   -webkit-appearance: none !important;
   appearance: none !important;
@@ -389,11 +389,11 @@ div:has(> #CodeMirrorToolbar) { border-bottom: 2px solid var(--c-border) !import
   font-family: var(--c-font) !important;
 }
 
-/* Barras separadoras entre paneles */
+/* Divider bars between panels */
 .rli-sideBar { border-right: 2px solid var(--c-border) !important; }
 .rli-noteList { border-right: 2px solid var(--c-border) !important; }
 
-/* Iconos Lucide de las libretas: en el PC (tema claro) se oscurecen al gris de la interfaz */
+/* Lucide notebook icons: on desktop (light theme) they're darkened to the UI gray */
 .sidebar .list-item img {
   filter: brightness(0.55) !important;
   width: 18px !important;
@@ -403,7 +403,7 @@ div:has(> #CodeMirrorToolbar) { border-bottom: 2px solid var(--c-border) !import
 
 
 /* =====================================================================
-   MODO OSCURO: se activa solo cuando Windows/Joplin están en oscuro
+   DARK MODE: only active when Windows/Joplin are in dark mode
    ===================================================================== */
 @media (prefers-color-scheme: dark) {
 :root {
@@ -463,7 +463,7 @@ div:has(> #CodeMirrorToolbar) { border-bottom: 2px solid var(--c-border) !import
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.16) !important; background-clip: padding-box !important; }
 ::-webkit-scrollbar-thumb:hover { background-color: rgba(255,255,255,0.3) !important; }
 
-/* Barra lateral */
+/* Sidebar */
 .sidebar .list-item-depth-1 .title { color: #FFFFFF !important; }
 .sidebar .list-item-depth-3 .title, .sidebar .list-item-depth-4 .title,
 .sidebar .list-item-depth-5 .title, .sidebar .list-item-depth-6 .title { color: #C8C8C8 !important; }
@@ -471,11 +471,11 @@ div:has(> #CodeMirrorToolbar) { border-bottom: 2px solid var(--c-border) !import
 .sidebar .list-item-wrapper.-selected .list-item { color: #FFFFFF !important; }
 .sidebar .list-item-depth-3 .fa-folder, .sidebar .list-item-depth-4 .fa-folder,
 .sidebar .list-item-depth-5 .fa-folder { color: #A0A0A0 !important; }
-/* Iconos Lucide: en oscuro se aclaran */
+/* Lucide icons: lightened in dark mode */
 .sidebar .list-item img { filter: brightness(1.6) !important; }
 .sidebar .list-item-depth-1 .list-item img { filter: brightness(1.9) !important; }
 
-/* Botones y buscador */
+/* Buttons and search box */
 .new-note-button { background: #ECECEC !important; border-color: #ECECEC !important; color: #1E1E1E !important; }
 .new-note-button:hover { background: #FFFFFF !important; color: #1E1E1E !important; }
 .new-todo-button { background: #2A2A2A !important; border-color: #3A3A3A !important; color: #ECECEC !important; }
@@ -483,7 +483,7 @@ div:has(> #CodeMirrorToolbar) { border-bottom: 2px solid var(--c-border) !import
 .search-bar .search-input { background: #252525 !important; border-color: #3A3A3A !important; }
 .search-bar .search-input:focus-within { border-color: #6E6E6E !important; box-shadow: 0 0 0 3px rgba(255,255,255,.06) !important; }
 
-/* Lista de notas */
+/* Note list */
 .note-list-item .content .title, .note-list-item .content .title span { color: #ECECEC !important; }
 .note-list-item .content .date { color: #ECECEC !important; }
 .note-list-item .content .excerpt { color: #9A9A9A !important; }
@@ -502,7 +502,7 @@ div:has(> #CodeMirrorToolbar) { border-bottom: 2px solid var(--c-border) !import
 
 }
 
-/* Cabecera de la lista de notas: mismo fondo que la lista (claro y oscuro) */
+/* Note list header: same background as the list (light and dark) */
 .rli-noteList div:has(> .new-note-todo-buttons),
 .rli-noteList div:has(> div > .new-note-todo-buttons) { background: var(--c-list) !important; }
 

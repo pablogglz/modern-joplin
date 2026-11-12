@@ -1,5 +1,5 @@
-/* Modern Joplin - Features — funcionalidades para Joplin (pestañas, notas fijadas…). Licencia MIT (ver LICENSE).
- * Complemento de "Modern Joplin - Theme": si está instalado, las pestañas usan sus colores y su fuente. */
+/* Modern Joplin - Features — features for Joplin (tabs, pinned notes…). MIT License (see LICENSE).
+ * Companion to "Modern Joplin - Theme": if it's installed, the tabs use its colors and font. */
 /* global joplin */
 
 const T = { Int: 1, String: 2, Bool: 3 };
@@ -31,7 +31,7 @@ function toFileUrl(dir) {
 	return 'file://' + encodeURI(p).replace(/#/g, '%23');
 }
 
-// Lee colores, modo y fuente del plugin de tema (si no está instalado, usa valores por defecto)
+// Reads colors, mode and font from the theme plugin (uses defaults if it isn't installed)
 async function readTheme() {
 	const theme = {
 		L: {
@@ -51,7 +51,7 @@ async function readTheme() {
 		theme.uiFont = wanted;
 		const f = UI_FONTS[wanted];
 		if (f.files) {
-			// Las fuentes viven dentro del plugin de tema (carpeta hermana en la caché de plugins)
+			// The fonts live inside the theme plugin (sibling folder in the plugin cache)
 			try {
 				const fs = joplin.require('fs-extra');
 				const dir = (await joplin.plugins.installationDir()).replace(SELF_ID, THEME_ID) + '/fonts';
@@ -61,7 +61,7 @@ async function readTheme() {
 						theme.faces += `@font-face{font-family:"${f.family}";font-style:${style};font-weight:${f.weights};src:url("${url}/${f.files}-latin-wght-${style}.woff2") format("woff2-variations");}`;
 					}
 				}
-			} catch (e) { /* sin fuentes: se usa la del sistema como respaldo */ }
+			} catch (e) { /* no fonts: fall back to the system font */ }
 		}
 	}
 	if (!['auto', 'light', 'dark'].includes(theme.mode)) theme.mode = 'auto';
@@ -69,9 +69,9 @@ async function readTheme() {
 }
 
 // =====================================================================
-//  Pestañas
+//  Tabs
 // =====================================================================
-// ---------- Idioma: español si Joplin está en español; si no, inglés ----------
+// ---------- Language: Spanish if Joplin is in Spanish; otherwise English ----------
 const I18N = {
 	es: {
 		tabsSection: "Modern Joplin · Pestañas",
@@ -288,20 +288,20 @@ const ICONS = {
 const Tabs = {
 	panel: null,
 	visible: true,
-	// Tres tipos de pestaña:
-	//  · provisional (preview): solo una, en cursiva; se sustituye al abrir otra nota desde la lista
-	//  · abierta: se queda hasta que la cierras (×)
-	//  · fijada (pinned): no se puede cerrar; solo desfijar (pasa a ser abierta)
+	// Three kinds of tab:
+	//  · preview: only one, in italics; replaced when another note is opened from the list
+	//  · open: stays until you close it (×)
+	//  · pinned: can't be closed, only unpinned (it becomes open)
 	list: [],          // [{ id, title, pinned, preview }]
 	activeId: null,
-	history: [],       // ids de notas activas, de la más reciente a la más antigua
+	history: [],       // ids of active notes, most recent first
 	style: '',
 	maxWidth: 220,
 	keepOnEdit: false,
 	addMode: 'temporary',
 	closeBehavior: 'last',
 	showDates: true,
-	dates: null,       // { created, updated } de la nota activa
+	dates: null,       // { created, updated } of the active note
 };
 
 async function registerTabsSettings() {
@@ -343,7 +343,7 @@ async function getNote(id) {
 	try { return await joplin.data.get(['notes', id], { fields: ['id', 'title', 'user_created_time', 'user_updated_time'] }); } catch (e) { return null; }
 }
 
-// Se guardan las pestañas abiertas y las fijadas (la provisional no)
+// Open and pinned tabs are saved (the preview tab isn't)
 async function saveTabs() {
 	const state = Tabs.list.filter(t => !t.preview).map(t => ({ id: t.id, p: t.pinned ? 1 : 0 }));
 	await joplin.settings.setValue('tabsState', JSON.stringify(state));
@@ -353,24 +353,24 @@ async function loadTabs() {
 	let saved = [];
 	try { saved = JSON.parse((await joplin.settings.value('tabsState')) || '[]'); } catch (e) { saved = []; }
 	if (!saved.length && !(await joplin.settings.value('tabsImported'))) {
-		// Primera vez: recuperar las pestañas fijadas de la versión anterior (dentro del plugin de tema)
-		// o, si no hay, de Note Tabs
+		// First run: recover pinned tabs from the previous version (inside the theme plugin)
+		// or, if there are none, from Note Tabs
 		try {
 			const prev = await joplin.settings.globalValue(`plugin-${THEME_ID}.tabsState`);
 			if (prev) saved = JSON.parse(prev);
-		} catch (e) { /* no había */ }
+		} catch (e) { /* there was none */ }
 		if (!saved.length) {
 			try {
 				const old = await joplin.settings.globalValue('plugin-joplin.plugin.note.tabs.noteTabs');
 				if (Array.isArray(old)) saved = old.map(x => x && x.id).filter(Boolean);
-			} catch (e) { /* Note Tabs no instalado */ }
+			} catch (e) { /* Note Tabs not installed */ }
 		}
 		await joplin.settings.setValue('tabsImported', true);
 	}
 	Tabs.list = [];
 	const seen = new Set();
 	for (const item of saved) {
-		// Formato antiguo: lista de ids (todas fijadas)
+		// Old format: list of ids (all pinned)
 		const id = typeof item === 'string' ? item : item && item.id;
 		if (!id || seen.has(id)) continue;
 		seen.add(id);
@@ -390,7 +390,7 @@ function tabsStyle(theme) {
 	return `<style>${css}</style>`;
 }
 
-// "15/07/2026, 17:48"; con allowToday, si es de hoy: "hoy, 10:10"
+// "15/07/2026, 17:48"; with allowToday, if it's today: "today, 10:10"
 function fmtDate(ms, allowToday = false) {
 	if (!ms) return '—';
 	const d = new Date(ms);
@@ -440,7 +440,7 @@ function setDates(note) {
 	Tabs.dates = note ? { created: note.user_created_time, updated: note.user_updated_time } : null;
 }
 
-// Posición justo a la derecha de la pestaña activa
+// Position right after the active tab
 function insertAfterActive(tab, activeId = Tabs.activeId) {
 	const i = Tabs.list.findIndex(t => t.id === activeId);
 	if (i >= 0) Tabs.list.splice(i + 1, 0, tab); else Tabs.list.push(tab);
@@ -460,7 +460,7 @@ async function onSelectionChange() {
 	} else {
 		const tab = { id: sel.id, title: note.title || tr('untitled'), pinned: Tabs.addMode === 'pinned', preview: Tabs.addMode === 'temporary' };
 		if (tab.preview) {
-			// Solo una pestaña provisional: se sustituye en su sitio
+			// Only one preview tab: it's replaced in place
 			const tempIndex = Tabs.list.findIndex(t => t.preview);
 			if (tempIndex >= 0) Tabs.list[tempIndex] = tab; else insertAfterActive(tab, prevActive);
 		} else {
@@ -471,7 +471,7 @@ async function onSelectionChange() {
 	await renderTabs();
 }
 
-// Abrir notas en pestañas nuevas (que se quedan abiertas) y mostrar la primera
+// Open notes in new tabs (which stay open) and show the first one
 async function openIds(ids, targetId = null, after = true) {
 	let anchor = targetId || Tabs.activeId;
 	let placeAfter = targetId ? after : true;
@@ -487,7 +487,7 @@ async function openIds(ids, targetId = null, after = true) {
 			const i = Tabs.list.findIndex(t => t.id === anchor);
 			if (i >= 0) Tabs.list.splice(placeAfter ? i + 1 : i, 0, tab); else Tabs.list.push(tab);
 		}
-		anchor = id; placeAfter = true; // las siguientes, a continuación
+		anchor = id; placeAfter = true; // the rest go right after
 	}
 	await saveTabs();
 	await renderTabs();
@@ -512,7 +512,7 @@ async function pinIds(ids, targetId = null, after = true) {
 	if (changed) { await saveTabs(); await renderTabs(); }
 }
 
-// Dejar abierta la pestaña provisional
+// Keep the preview tab open
 async function keepTab(id) {
 	const tab = Tabs.list.find(t => t.id === id);
 	if (!tab || !tab.preview) return;
@@ -521,7 +521,7 @@ async function keepTab(id) {
 	await renderTabs();
 }
 
-// Desfijar: la pestaña sigue abierta (con ×)
+// Unpin: the tab stays open (with ×)
 async function unpinTab(id) {
 	const tab = Tabs.list.find(t => t.id === id);
 	if (!tab || !tab.pinned) return;
@@ -535,7 +535,7 @@ async function unpinIds(ids) {
 	for (const id of ids) await unpinTab(id);
 }
 
-// Elegir a qué pestaña ir cuando se cierra la activa
+// Pick which tab to go to when the active one is closed
 function nextAfterRemoval(index) {
 	const b = Tabs.closeBehavior;
 	if (b === 'left') return Tabs.list[index - 1] || Tabs.list[index];
@@ -544,7 +544,7 @@ function nextAfterRemoval(index) {
 	return (last && Tabs.list.find(t => t.id === last)) || Tabs.list[index - 1] || Tabs.list[index];
 }
 
-// Cerrar (×, botón central, comando): solo pestañas no fijadas y nunca la única pestaña
+// Close (×, middle click, command): only unpinned tabs, and never the only tab
 async function closeTab(id) {
 	const index = Tabs.list.findIndex(t => t.id === id);
 	if (index < 0 || Tabs.list[index].pinned || Tabs.list.length <= 1) return;
@@ -618,7 +618,7 @@ async function startTabs(theme) {
 	await joplin.workspace.onNoteChange(async (event) => {
 		const tab = Tabs.list.find(t => t.id === event.id);
 		if (!tab && event.id !== Tabs.activeId) return;
-		if (event.event === 3) { // nota borrada
+		if (event.event === 3) { // note deleted
 			if (tab) {
 				Tabs.list = Tabs.list.filter(t => t !== tab);
 				if (!tab.preview) await saveTabs();
@@ -696,16 +696,16 @@ async function startTabs(theme) {
 
 
 // =====================================================================
-//  Notas fijadas arriba de la lista (sincronizadas con los datos internos de cada nota)
+//  Pinned notes above the list (synced through each note's internal data)
 // =====================================================================
 const PIN_SECTION = 'modernJoplinPinned';
 const NOTE_TYPE = 1; // ModelType.Note
-const PIN_KEY = 'pinned';          // fijada en su carpeta
-const GLOBAL_KEY = 'pinnedGlobal'; // fijada en todas las carpetas
+const PIN_KEY = 'pinned';          // pinned in its notebook
+const GLOBAL_KEY = 'pinnedGlobal'; // pinned in every notebook
 
-// El valor guardado en cada nota es un número de orden (menor = más arriba).
-// Una fijada nueva recibe un número menor que todas las demás (-milisegundos actuales), así aparece arriba del todo; al
-// reordenar arrastrando se renumeran 1..n. (Las de la versión 1.1 guardaban true.)
+// The value stored in each note is a sort number (lower = higher up).
+// A newly pinned note gets a number lower than all the others (-current milliseconds), so it shows at the very top; when
+// reordering by dragging they're renumbered 1..n. (Version 1.1 stored true.)
 const Pinned = {
 	panel: null,
 	folderId: undefined,
@@ -729,7 +729,7 @@ async function registerPinnedSettings() {
 	});
 }
 
-// Devuelve el orden si la nota está fijada con esa clave; si no, null
+// Returns the order if the note is pinned with that key; otherwise null
 function pinOrder(userData, key, time) {
 	if (!userData) return null;
 	try {
@@ -737,7 +737,7 @@ function pinOrder(userData, key, time) {
 		const v = d && d[SELF_ID] && d[SELF_ID][key];
 		if (!v || v.d) return null;
 		if (typeof v.v === 'number') return v.v;
-		if (v.v === true) return -(time || 0); // formato antiguo: la más reciente arriba
+		if (v.v === true) return -(time || 0); // old format: most recent on top
 		return null;
 	} catch (e) { return null; }
 }
@@ -773,8 +773,8 @@ async function collectFolderPinned(folderId) {
 	return out.sort(byOrder);
 }
 
-// Las globales pueden estar en cualquier libreta: se recorren todas las notas
-// (solo al arrancar, al sincronizar y al fijar/desfijar una global)
+// Global pins can be in any notebook: all notes are scanned
+// (only on startup, after sync, and when pinning/unpinning a global note)
 async function collectGlobalPinned() {
 	const notes = await pagedGet(['notes'], ['id', 'title', 'parent_id', 'user_updated_time', 'user_data']);
 	const out = [];
@@ -838,12 +838,12 @@ async function doRefreshPinned({ folder = false, global = false } = {}) {
 	await renderPinned(note ? note.id : null);
 }
 
-// ---- Etiquetas "📌 Fijada" / "📌 Global" (para verlas en el móvil, donde no hay plugins) ----
+// ---- "📌 Pinned" / "📌 Global" tags (to see them on mobile, where there are no plugins) ----
 const TAG_NAMES = {
 	[PIN_KEY]: { es: '# 📌 Fijadas (carpetas)', en: '# 📌 Pinned (notebooks)' },
 	[GLOBAL_KEY]: { es: '# 📌 Fijadas (globales)', en: '# 📌 Pinned (global)' },
 };
-// Nombres usados en la versión 1.5.0: si existen, se renombran a los actuales (conservando sus notas)
+// Names used in version 1.5.0: if they exist, they're renamed to the current ones (keeping their notes)
 const OLD_TAG_NAMES = {
 	[PIN_KEY]: ['📌 Fijada', '📌 Pinned'],
 	[GLOBAL_KEY]: ['📌 Global'],
@@ -869,8 +869,8 @@ async function findTag(key, create) {
 	return tag || null;
 }
 
-// Marca interna "esta fijada ya tiene su etiqueta": así, si luego falta la etiqueta, sabemos
-// que se quitó en el móvil (y no que la fijó otro ordenador con una versión sin etiquetas)
+// Internal "this pinned note already has its tag" mark: so if the tag is later missing, we know
+// it was removed on mobile (and not pinned by another computer running a version without tags)
 const tagMark = (key) => key + 'Tagged';
 function hasMark(userData, key) {
 	try {
@@ -895,9 +895,9 @@ async function setTag(key, id, on) {
 	} catch (e) { console.error('Modern Joplin Features (etiquetas):', e); }
 }
 
-// Poner de acuerdo etiquetas y fijadas (al arrancar y tras sincronizar).
-//  · La primera vez (o tras reactivar la opción) manda el PC: se etiquetan las fijadas y se quitan etiquetas sobrantes.
-//  · Después: etiqueta puesta en el móvil -> se fija; etiqueta quitada en el móvil -> se desfija.
+// Reconcile tags and pinned notes (on startup and after sync).
+//  · The first time (or after re-enabling the option) the desktop wins: pinned notes get tagged and stray tags are removed.
+//  · After that: tag added on mobile -> pinned; tag removed on mobile -> unpinned.
 async function reconcileTags() {
 	if (!Pinned.useTags) return false;
 	const notes = await pagedGet(['notes'], ['id', 'user_updated_time', 'user_data']);
@@ -917,7 +917,7 @@ async function reconcileTags() {
 				continue;
 			}
 			if (ready && hasMark(byId.get(id).user_data, key)) {
-				// Quitada en el móvil
+				// Removed on mobile
 				await joplin.data.userDataDelete(NOTE_TYPE, id, key);
 				await joplin.data.userDataDelete(NOTE_TYPE, id, tagMark(key));
 				changed = true;
@@ -929,7 +929,7 @@ async function reconcileTags() {
 		for (const id of tagged) {
 			if (pinned.has(id) || !byId.has(id)) continue;
 			if (ready) {
-				// Puesta en el móvil
+				// Added on mobile
 				await joplin.data.userDataSet(NOTE_TYPE, id, key, order--);
 				await joplin.data.userDataSet(NOTE_TYPE, id, tagMark(key), true);
 				changed = true;
@@ -943,7 +943,7 @@ async function reconcileTags() {
 }
 
 async function setNotePinned(ids, key, pinned) {
-	// Por encima de todas las que ya hay (y de cualquier fijada antes en otro ordenador)
+	// Above all existing ones (and any pinned earlier on another computer)
 	const known = (key === GLOBAL_KEY ? Pinned.globalItems : Pinned.folderItems).map(n => n.order);
 	let order = Math.min(-Date.now(), ...known) - 1;
 	for (const id of ids) {
@@ -957,17 +957,17 @@ async function setNotePinned(ids, key, pinned) {
 async function togglePinned(ids, key) {
 	const sel = (Array.isArray(ids) && ids.length ? ids : await joplin.workspace.selectedNoteIds()) || [];
 	if (!sel.length) return;
-	// Si alguna no está fijada, se fijan todas; si todas lo están, se desfijan
+	// If any isn't pinned, pin them all; if they all are, unpin them
 	let allPinned = true;
 	for (const id of sel) {
 		const v = await joplin.data.userDataGet(NOTE_TYPE, id, key);
 		if (v === undefined || v === null || v === false) { allPinned = false; break; }
 	}
-	// Al fijar, conservar el orden en que aparecen seleccionadas (la primera, arriba)
+	// When pinning, keep the order in which they're selected (the first one on top)
 	await setNotePinned(allPinned ? sel : sel.slice().reverse(), key, !allPinned);
 }
 
-// Reordenar arrastrando dentro de una sección; se guardan solo los números que cambian
+// Reorder by dragging within a section; only the numbers that change are saved
 async function movePinned(section, id, targetId, after) {
 	const key = section === 'global' ? GLOBAL_KEY : PIN_KEY;
 	let list = section === 'global' ? Pinned.globalItems.slice() : Pinned.folderItems.slice();
@@ -997,7 +997,7 @@ async function movePinned(section, id, targetId, after) {
 async function startPinned(theme) {
 	if (!(await joplin.settings.value('pinnedEnabled'))) return;
 	Pinned.useTags = !!(await joplin.settings.value('pinnedTags'));
-	// Si se desactivan las etiquetas, al volver a activarlas se parte de las fijadas del PC
+	// If tags are turned off, turning them back on starts from the desktop's pinned notes
 	if (!Pinned.useTags) await joplin.settings.setValue('pinnedTagsReady', false);
 	const light = `--mn-bar:${theme.L.bg};--mn-sel:${theme.L.sel};--mn-hover:${theme.L.hover};--mn-hover2:rgba(0,0,0,.08);--mn-border:${theme.L.border};--mn-text:#1F1E1D;--mn-text2:#5E5D59;--mn-text3:#85837D;--mn-drop:#8A8985;`;
 	const dark = `--mn-bar:${theme.D.side};--mn-sel:${theme.D.sel};--mn-hover:${theme.D.hover};--mn-hover2:rgba(255,255,255,.1);--mn-border:#2C2C2C;--mn-text:#ECECEC;--mn-text2:#B8B8B8;--mn-text3:#8E8E8E;--mn-drop:#9A9A9A;`;
@@ -1051,7 +1051,7 @@ async function startPinned(theme) {
 }
 
 // =====================================================================
-//  Botón "Aa" de la barra del editor: ventanita con estilos de párrafo
+//  "Aa" button in the editor toolbar: popup with paragraph styles
 // =====================================================================
 const STYLES = [
 	{ id: 'title', css: 'font-size:20px;font-weight:700' },
@@ -1109,7 +1109,7 @@ async function startStyles(theme) {
 }
 
 // =====================================================================
-//  Nota de hoy: Notas diarias › AAAA › AAAA-MM (Mes) › AAAA-MM-DD
+//  Today's note: Daily notes › YYYY › YYYY-MM (Month) › YYYY-MM-DD
 // =====================================================================
 const DAILY_SECTION = 'modernJoplinDaily';
 const MONTH_NAMES = {
@@ -1148,13 +1148,13 @@ async function dailyNoteId(now = new Date()) {
 		return f;
 	};
 
-	// Acepta también la carpeta con prefijo de orden tipo "00) " o "01. "
+	// Also accept the folder with an ordering prefix like "00) " or "01. "
 	const noPrefix = (t) => String(t || '').trim().replace(/^\d+\s*[).\-_]\s*/, '');
 	const loose = (f) => sameName(noPrefix(f.title), noPrefix(rootName));
 	const root = children('').find(f => sameName(f.title, rootName)) || folders.find(f => sameName(f.title, rootName))
 		|| children('').find(loose) || folders.find(loose) || await create(rootName, '');
 	const year = children(root.id).find(f => String(f.title).trim() === y) || await create(y, root.id);
-	// Mes: vale cualquier carpeta que empiece por AAAA-MM (da igual cómo se llame el mes)
+	// Month: any folder starting with YYYY-MM will do (whatever the month is called)
 	const month = children(year.id).find(f => String(f.title).trim().startsWith(ym)) || await create(`${ym} (${MONTH_NAMES[LANG][day.getMonth()]})`, year.id);
 	const notes = await pagedGet(['folders', month.id, 'notes'], ['id', 'title', 'deleted_time']);
 	const existing = notes.find(n => !n.deleted_time && String(n.title).trim() === title);
@@ -1178,7 +1178,7 @@ async function startDaily() {
 }
 
 // =====================================================================
-//  Índice (Outline) de la nota abierta
+//  Outline of the open note
 // =====================================================================
 const OUTLINE_SECTION = 'modernJoplinOutline';
 const Outline = { panel: null, visible: true, autoHide: false, style: '', noteId: null, timer: null, shown: null };
@@ -1196,7 +1196,7 @@ async function registerOutlineSettings() {
 	});
 }
 
-// Texto del encabezado sin marcas de Markdown
+// Heading text without Markdown markup
 function plainHeading(t) {
 	return t
 		.replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1')
@@ -1207,7 +1207,7 @@ function plainHeading(t) {
 		.trim();
 }
 
-// Igual que los anclajes del visor de Joplin (aproximado): minúsculas, sin signos, espacios -> guiones
+// Same as the Joplin viewer's anchors (approximately): lowercase, no punctuation, spaces -> hyphens
 function headingSlug(text, used) {
 	let slug = text.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').trim().replace(/\s+/g, '-');
 	const base = slug;
@@ -1237,7 +1237,7 @@ function parseHeadings(body) {
 			if (text) out.push({ level: m[1].length, text, line: i, slug: headingSlug(text, used) });
 			continue;
 		}
-		// Encabezados subrayados (=== / ---) debajo de un párrafo
+		// Underlined headings (=== / ---) below a paragraph
 		m = /^\s{0,3}(=+|-+)\s*$/.exec(line);
 		const prev = i > 0 ? lines[i - 1] : '';
 		if (m && prev.trim() && !/^\s{0,3}([#>]|[-*+]\s|\d+[.)]\s|\|)/.test(prev) && !(out.length && out[out.length - 1].line === i - 1)) {
@@ -1286,8 +1286,8 @@ async function startOutline(theme) {
 	await joplin.views.panels.addScript(Outline.panel, './webview/outline.js');
 	await joplin.views.panels.onMessage(Outline.panel, async (msg) => {
 		if (!msg || msg.type !== 'go') return;
-		try { await joplin.commands.execute('editor.execCommand', { name: 'modernJoplinScrollToLine', args: [msg.line] }); } catch (e) { /* editor no visible */ }
-		try { if (msg.slug) await joplin.commands.execute('scrollToHash', msg.slug); } catch (e) { /* visor no visible */ }
+		try { await joplin.commands.execute('editor.execCommand', { name: 'modernJoplinScrollToLine', args: [msg.line] }); } catch (e) { /* editor not visible */ }
+		try { if (msg.slug) await joplin.commands.execute('scrollToHash', msg.slug); } catch (e) { /* viewer not visible */ }
 	});
 
 	await joplin.commands.register({
@@ -1309,7 +1309,7 @@ async function startOutline(theme) {
 }
 
 // =====================================================================
-//  Cabecera de la nota y barra de botones adaptables (CSS de la ventana)
+//  Responsive note header and toolbar (window CSS)
 // =====================================================================
 const EDITOR_SECTION = 'modernJoplinEditor';
 
@@ -1331,8 +1331,8 @@ async function registerEditorSettings() {
 	});
 }
 
-// ---- Barra de botones personalizable: orden, menú ⌄ y ocultos (se guarda en la etiqueta global y se sincroniza) ----
-// Cada botón se reconoce por la clase de su icono (no depende del idioma)
+// ---- Customizable toolbar: order, ⌄ menu and hidden buttons (saved in the global tag and synced) ----
+// Each button is identified by its icon's class (language-independent)
 const TB_BUTTONS = [
 	['icon-bold', 'Negrita', 'Bold'],
 	['icon-italic', 'Cursiva', 'Italic'],
@@ -1360,7 +1360,7 @@ const TB_BUTTONS = [
 	['fa-pen-alt', 'Añadir dibujo', 'Add drawing'],
 ];
 const TB_MORE_ICON = 'fa-chevron-down';
-// Por defecto: lo más usado a la vista y el resto en el menú ⌄
+// Default: the most used ones visible and the rest in the ⌄ menu
 const TB_DEFAULT_MENU = ['fa-file-export', 'icon-attachment', 'fa-ellipsis-h', 'icon-add-date', 'fa-exclamation-circle', 'fa-eraser', 'fa-highlighter',
 	'fa-strikethrough', 'fa-underline', 'fa-superscript', 'fa-subscript', 'fa-align-left', 'fa-pen-alt'];
 const TB_TAG_KEY = 'toolbar';
@@ -1372,7 +1372,7 @@ function tbDefault() {
 	return { order: TB_BUTTONS.map(b => b[0]), state };
 }
 
-// Mezcla lo guardado con la lista conocida (botones nuevos al final, visibles)
+// Merge what's saved with the known list (new buttons at the end, visible)
 function tbNormalize(cfg) {
 	const known = TB_BUTTONS.map(b => b[0]);
 	const base = tbDefault();
@@ -1387,7 +1387,7 @@ function tbNormalize(cfg) {
 function tbCss(cfg) {
 	const G = '#CodeMirrorToolbar > .group:nth-child(2)';
 	const btn = (k) => `${G} > button:has(> .toolbar-icon.${k})`;
-	const out = ['\n/* ---- Barra de botones personalizada (orden, menú y ocultos) ---- */'];
+	const out = ['\n/* ---- Custom toolbar (order, menu and hidden) ---- */'];
 	out.push(`${G} > * { order: 500; }`);
 	out.push(`${G} > span { display: none !important; }`);
 	const visible = cfg.order.filter(k => cfg.state[k] === 'show');
@@ -1399,7 +1399,7 @@ function tbCss(cfg) {
 		out.push(`${btn(TB_MORE_ICON)} { display: none !important; }`);
 		return out.join('\n') + '\n';
 	}
-	// Menú ⌄: los botones flotan en un panel a la derecha, debajo de la barra
+	// ⌄ menu: the buttons float in a panel on the right, below the toolbar
 	const COLS = Math.min(6, menu.length);
 	const ROWS = Math.ceil(menu.length / COLS);
 	const STEP = 32;
@@ -1416,10 +1416,10 @@ function tbCss(cfg) {
 		`width: ${COLS * STEP + 12}px; height: ${ROWS * STEP + 12}px; box-sizing: border-box; border-radius: 10px; ` +
 		`background: var(--joplin-background-color, #fff); border: 1px solid var(--joplin-divider-color, rgba(127,127,127,.3)); ` +
 		`box-shadow: 0 6px 24px rgba(0,0,0,.18); pointer-events: none; visibility: hidden; opacity: 0; transition: opacity .12s ease, visibility 0s linear .35s; }`);
-	// Abierto mientras: el botón ⌄ tiene el foco (tras hacer clic) o el ratón está sobre ⌄ o sobre un botón del menú
+	// Open while: the ⌄ button has focus (after a click) or the mouse is over ⌄ or over a menu button
 	const triggers = [`button:focus > .toolbar-icon.${TB_MORE_ICON}`, `button:hover > .toolbar-icon.${TB_MORE_ICON}`]
 		.concat(menu.map(k => `button:hover > .toolbar-icon.${k}`)).join(', ');
-	// Anclar el panel al botón ⌄ (CSS anchor positioning): siempre justo debajo de él, alineado a su derecha
+	// Anchor the panel to the ⌄ button (CSS anchor positioning): always right below it, aligned to its right edge
 	const PW = COLS * STEP + 12;
 	const anchored = [`${btn(TB_MORE_ICON)} { anchor-name: --mj-more; }`];
 	menu.forEach((k, i) => {
@@ -1435,7 +1435,7 @@ function tbCss(cfg) {
 
 const FOLDER_TYPE = 2; // ModelType.Folder
 
-// Leer un dato del plugin guardado en un elemento (con su fecha), a partir de su campo user_data
+// Read a plugin value stored on an item (with its timestamp) from its user_data field
 function rawUserData(userData, key) {
 	try {
 		const d = typeof userData === 'string' ? JSON.parse(userData) : userData;
@@ -1444,8 +1444,8 @@ function rawUserData(userData, key) {
 	} catch (e) { return null; }
 }
 
-// La configuración se guarda (sincronizada) en TODAS las libretas principales; vale la copia más reciente.
-// Así no depende de ninguna etiqueta ni nota: solo se perdería borrando todas las libretas principales.
+// The config is saved (synced) in ALL top-level notebooks; the most recent copy wins.
+// That way it doesn't depend on any tag or note: it would only be lost by deleting every top-level notebook.
 async function tbTopFolders() {
 	const folders = await pagedGet(['folders'], ['id', 'parent_id', 'user_data']);
 	return folders.filter(f => !f.parent_id);
@@ -1457,20 +1457,20 @@ async function tbLoad() {
 	return tbNormalize(cfg);
 }
 
-// Si en las libretas hay una copia más nueva que la de este ordenador, se adopta
+// If the notebooks hold a newer copy than this computer's, adopt it
 async function tbPullSynced() {
 	let best = null;
 	for (const f of await tbTopFolders()) {
 		const c = rawUserData(f.user_data, TB_TAG_KEY);
 		if (c && (!best || c.t > best.t)) best = c;
 	}
-	// Versión 1.9.0: estaba en la etiqueta global (se migra una vez)
+	// Version 1.9.0: it lived in the global tag (migrated once)
 	if (!best) {
 		try {
 			const tag = await findTag(GLOBAL_KEY, false);
 			const legacy = tag ? await joplin.data.userDataGet(TAG_TYPE, tag.id, TB_TAG_KEY) : null;
 			if (legacy) { best = { value: legacy, t: 1 }; await tbSave(tbNormalize(legacy), 1); }
-		} catch (e) { /* sin etiqueta */ }
+		} catch (e) { /* no tag */ }
 	}
 	if (!best) return false;
 	const localT = Number(await joplin.settings.value('toolbarConfigTime')) || 0;
@@ -1485,7 +1485,7 @@ async function tbSave(cfg, time) {
 	await joplin.settings.setValue('toolbarConfig', JSON.stringify(cfg));
 	await joplin.settings.setValue('toolbarConfigTime', time || Date.now());
 	for (const f of await tbTopFolders()) {
-		try { await joplin.data.userDataSet(FOLDER_TYPE, f.id, TB_TAG_KEY, cfg); } catch (e) { /* libreta no disponible */ }
+		try { await joplin.data.userDataSet(FOLDER_TYPE, f.id, TB_TAG_KEY, cfg); } catch (e) { /* notebook not available */ }
 	}
 }
 
@@ -1504,7 +1504,7 @@ async function startEditorLayout() {
 	let css = '';
 	if (await joplin.settings.value('responsiveHeader')) css += await part('editor-layout.css');
 	if (await joplin.settings.value('toggleUnderNav')) css += await part('editor-layout-toggle.css');
-	// Solo se oculta la fecha de Joplin si las nuestras se están mostrando
+	// Only hide Joplin's date if ours are being shown
 	const ourDates = (await joplin.settings.value('tabsEnabled')) && (await joplin.settings.value('tabsShowDates'));
 	if (ourDates && (await joplin.settings.value('hideJoplinDate'))) css += await part('editor-hide-date.css');
 	if (await joplin.settings.value('toolbarCustom')) css += tbCss(await tbLoad());
@@ -1522,13 +1522,13 @@ async function startToolbar() {
 		name: 'modernJoplin.toolbarMore',
 		label: tr('tbMore'),
 		iconName: 'fas ' + TB_MORE_ICON,
-		execute: async () => { /* el menú se abre solo con CSS (foco / ratón) */ },
+		execute: async () => { /* the menu opens with CSS alone (focus / hover) */ },
 	});
 	await joplin.views.toolbarButtons.create('modernJoplinToolbarMore', 'modernJoplin.toolbarMore', 'editorToolbar');
 
 	const dialog = await joplin.views.dialogs.create('modernJoplinToolbarDialog');
-	// Ventana grande que se adapta al tamaño de Joplin (90 % del ancho, 80 % del alto)
-	try { await joplin.views.dialogs.setFitToContent(dialog, false); } catch (e) { /* versiones antiguas */ }
+	// Large window that adapts to Joplin's size (90 % of the width, 80 % of the height)
+	try { await joplin.views.dialogs.setFitToContent(dialog, false); } catch (e) { /* old versions */ }
 	await joplin.views.dialogs.addScript(dialog, './webview/toolbar-dialog.css');
 	await joplin.views.dialogs.addScript(dialog, './webview/toolbar-dialog.js');
 	await joplin.commands.register({
@@ -1548,7 +1548,7 @@ async function startToolbar() {
 				if (!res || res.id === 'cancel') return;
 				if (res.id === 'reset') { cfg = tbDefault(); continue; }
 				let next = cfg;
-				try { next = tbNormalize(JSON.parse(res.formData.toolbar.config)); } catch (e) { /* sin cambios */ }
+				try { next = tbNormalize(JSON.parse(res.formData.toolbar.config)); } catch (e) { /* no changes */ }
 				await tbSave(next);
 				await startEditorLayout();
 				return;
@@ -1562,7 +1562,7 @@ async function startToolbar() {
 }
 
 // =====================================================================
-//  Recordar por dónde ibas en cada nota (línea de arriba de la vista del editor Markdown)
+//  Remember where you were in each note (topmost line of the Markdown editor view)
 // =====================================================================
 const SCROLL_KEY = 'scroll';
 const Scroll = { sync: true, map: {}, current: null, expectLines: 0, file: '', timer: null };
@@ -1573,7 +1573,7 @@ async function scrollPersistSoon() {
 	clearTimeout(Scroll.timer);
 	Scroll.timer = setTimeout(async () => {
 		try {
-			// Guardar como mucho las 3000 notas más recientes
+			// Keep at most the 3000 most recent notes
 			const entries = Object.entries(Scroll.map).sort((a, b) => b[1].t - a[1].t).slice(0, 3000);
 			Scroll.map = Object.fromEntries(entries);
 			await joplin.require('fs-extra').writeFile(Scroll.file, JSON.stringify(Scroll.map), 'utf8');
@@ -1589,16 +1589,16 @@ async function scrollSynced(id) {
 	} catch (e) { return null; }
 }
 
-// Al salir de una nota: guardar su posición dentro de la nota (se sincroniza; no cambia su fecha)
+// When leaving a note: save its position inside the note (synced; doesn't change its date)
 async function scrollPush(id) {
 	const pos = Scroll.map[id];
-	// Solo si en este ordenador te has movido desde la última vez (nunca se pisa una posición más nueva de otro PC)
+	// Only if you've moved on this computer since last time (never overwrite a newer position from another computer)
 	if (!pos || !pos.dirty || !Scroll.sync) return;
 	pos.dirty = false;
 	scrollPersistSoon();
 	const synced = await scrollSynced(id);
 	if (synced ? (synced.line === pos.line || synced.t > pos.t) : pos.line === 0) return;
-	try { await joplin.data.userDataSet(NOTE_TYPE, id, SCROLL_KEY, { line: pos.line }); } catch (e) { /* nota borrada */ }
+	try { await joplin.data.userDataSet(NOTE_TYPE, id, SCROLL_KEY, { line: pos.line }); } catch (e) { /* note deleted */ }
 }
 
 async function scrollOnSelection() {
@@ -1608,7 +1608,7 @@ async function scrollOnSelection() {
 	Scroll.expectLines = note ? countLines(note.body) : 0;
 	if (prev && prev !== Scroll.current) await scrollPush(prev);
 	if (!note) return;
-	// Vale la más reciente: la de este ordenador o la sincronizada desde otro
+	// The most recent one wins: this computer's or the one synced from another
 	let pos = Scroll.map[note.id] || null;
 	if (Scroll.sync) {
 		const synced = await scrollSynced(note.id);
@@ -1619,7 +1619,7 @@ async function scrollOnSelection() {
 		}
 	}
 	if (pos && pos.line > 0) {
-		try { await joplin.commands.execute('editor.execCommand', { name: 'modernJoplinRestoreScroll', args: [pos.line, Scroll.expectLines] }); } catch (e) { /* editor no visible */ }
+		try { await joplin.commands.execute('editor.execCommand', { name: 'modernJoplinRestoreScroll', args: [pos.line, Scroll.expectLines] }); } catch (e) { /* editor not visible */ }
 	}
 }
 
@@ -1634,7 +1634,7 @@ async function startScroll() {
 
 	await joplin.contentScripts.onMessage('modernJoplinStyles', (msg) => {
 		if (!msg || msg.type !== 'scroll' || !Scroll.current) return;
-		if (msg.lines !== Scroll.expectLines) return; // el editor aún muestra otra nota
+		if (msg.lines !== Scroll.expectLines) return; // the editor is still showing another note
 		const old = Scroll.map[Scroll.current];
 		if (old && old.line === msg.line) return;
 		Scroll.map[Scroll.current] = { line: msg.line, t: Date.now(), dirty: true };
@@ -1643,7 +1643,7 @@ async function startScroll() {
 	await joplin.workspace.onNoteSelectionChange(() => scrollOnSelection().catch(e => console.error('Modern Joplin Features (posición):', e)));
 	await joplin.workspace.onNoteChange(async (event) => {
 		if (event.id !== Scroll.current || event.event !== 2) return;
-		try { const n = await joplin.data.get(['notes', event.id], { fields: ['id', 'body'] }); Scroll.expectLines = countLines(n.body); } catch (e) { /* nada */ }
+		try { const n = await joplin.data.get(['notes', event.id], { fields: ['id', 'body'] }); Scroll.expectLines = countLines(n.body); } catch (e) { /* nothing */ }
 	});
 	await scrollOnSelection();
 }
@@ -1659,7 +1659,7 @@ joplin.plugins.register({
 		const theme = await readTheme();
 		try { await startTabs(theme); } catch (e) { console.error('Modern Joplin Features (pestañas):', e); }
 		try { await startPinned(theme); } catch (e) { console.error('Modern Joplin Features (fijadas):', e); }
-		try { await tbPullSynced(); } catch (e) { /* sin sincronizar todavía */ }
+		try { await tbPullSynced(); } catch (e) { /* not synced yet */ }
 		try { await startEditorLayout(); } catch (e) { console.error('Modern Joplin Features (editor):', e); }
 		try { await startToolbar(); } catch (e) { console.error('Modern Joplin Features (barra):', e); }
 		try { await startOutline(theme); } catch (e) { console.error('Modern Joplin Features (índice):', e); }

@@ -1,4 +1,4 @@
-/* Modern Joplin - Features — barra de pestañas */
+/* Modern Joplin - Features — tab bar */
 html, body {
 	margin: 0;
 	padding: 0;
@@ -32,7 +32,7 @@ html, body {
 	overflow-y: hidden;
 	scrollbar-width: none;
 }
-/* Fechas de la nota abierta, a la derecha: creación arriba, modificación abajo */
+/* Dates of the open note, on the right: created on top, modified below */
 .mn-dates {
 	display: flex;
 	flex-direction: column;
@@ -46,7 +46,7 @@ html, body {
 	color: var(--mn-text3);
 	white-space: nowrap;
 }
-/* Ventana estrecha: sin "Creada"/"Modificada" (el texto completo sale al pasar el ratón) */
+/* Narrow window: no "Created"/"Modified" (the full text shows on hover) */
 @media (max-width: 560px) { .mn-dates { padding: 0 10px 0 6px; font-size: 11px; } .mn-dates .mn-dl { display: none; } .mn-tab { min-width: 72px; } }
 @media (max-width: 360px) { .mn-dates { display: none; } }
 .mn-tabs::-webkit-scrollbar { display: none; }
@@ -93,7 +93,7 @@ html, body {
 }
 .mn-btn svg { width: 14px; height: 14px; }
 .mn-tab:hover .mn-btn, .mn-tab.active .mn-btn { opacity: .6; }
-/* La chincheta se ve siempre; en las fijadas, rellena */
+/* The pin icon is always visible; filled on pinned tabs */
 .mn-btn.mn-pin { opacity: .35; }
 .mn-btn.mn-pin.on { opacity: .8; }
 .mn-tab:hover .mn-btn.mn-pin { opacity: .7; }

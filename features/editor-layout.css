@@ -1,15 +1,15 @@
-/* Modern Joplin - Features — cabecera de la nota y barra de botones adaptables */
+/* Modern Joplin - Features — responsive note header and toolbar */
 
-/* ---- 1. Título de la nota siempre arriba, en su propia fila y a todo el ancho ---- */
+/* ---- 1. Note title always on top, on its own row and full width ---- */
 .note-title-wrapper { flex-direction: column !important; align-items: stretch !important; height: auto !important; }
 .note-title-wrapper > .title-input { width: 100% !important; max-width: none !important; flex: none !important; }
 
-/* ---- 2. Fila de fecha, idioma, campanita y botones: si no cabe, pasa a varias filas ---- */
+/* ---- 2. Row with date, language, alarm bell and buttons: wraps onto several rows if it doesn't fit ---- */
 .note-title-info-group { flex-wrap: wrap !important; align-items: center !important; row-gap: 2px; height: auto !important; min-width: 0 !important; width: 100% !important; }
 .note-title-info-group > .editor-toolbar { flex-wrap: wrap !important; height: auto !important; min-width: 0 !important; margin-left: auto !important; }
 .note-title-info-group > .editor-toolbar > .group { flex-wrap: wrap !important; height: auto !important; }
 
-/* ---- 3. Barra de botones del editor Markdown: los botones bajan de fila en vez de cortarse ---- */
+/* ---- 3. Markdown editor toolbar: buttons wrap to a new row instead of being cut off ---- */
 div:has(> #CodeMirrorToolbar) { height: auto !important; container-type: inline-size; }
 #CodeMirrorToolbar { height: auto !important; min-height: 39px; flex-wrap: nowrap !important; align-items: flex-start !important; overflow: visible !important; }
 #CodeMirrorToolbar > .group { flex-wrap: wrap !important; height: auto !important; row-gap: 2px; }
@@ -17,7 +17,7 @@ div:has(> #CodeMirrorToolbar) { height: auto !important; container-type: inline-
 #CodeMirrorToolbar > .group:first-child, #CodeMirrorToolbar > .group:last-child { flex: none !important; }
 #CodeMirrorToolbar > .spacer { flex: 0 0 4px !important; min-width: 0 !important; }
 
-/* ---- Editor muy estrecho: menos margen a los lados de la barra ---- */
+/* ---- Very narrow editor: less margin on both sides of the toolbar ---- */
 @container (max-width: 420px) {
 	#CodeMirrorToolbar { padding-left: 6px !important; padding-right: 6px !important; }
 }

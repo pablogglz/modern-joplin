@@ -32,7 +32,7 @@ body, #rendered-md {
 #rendered-md mark { background: #F3E3A6 !important; }
 ::selection { background: #D6DDE7 !important; }
 
-/* Modo oscuro */
+/* Dark mode */
 @media (prefers-color-scheme: dark) {
   body, #rendered-md { background: __NOTE_BG_DARK__ !important; color: #ECECEC !important; }
   #rendered-md h1, #rendered-md h2, #rendered-md h3, #rendered-md h4 { color: #ECECEC !important; }
@@ -50,7 +50,7 @@ body, #rendered-md {
   ::selection { background: #3B4A60 !important; }
 }
 
-/* Editor visual (texto enriquecido): Enter da una línea normal, sin hueco grande,
-   así no hace falta pulsar Enter dos veces (que es lo que genera los &nbsp;) */
+/* Rich text editor: Enter gives a normal line, without a big gap,
+   so you don't need to press Enter twice (which is what produces the &nbsp;) */
 body.mce-content-body p { margin-top: 0 !important; margin-bottom: 0.25em !important; }
 body.mce-content-body { font-family: __NOTE_FONT__ !important; }

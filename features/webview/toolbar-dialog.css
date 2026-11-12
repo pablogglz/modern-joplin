@@ -1,4 +1,4 @@
-/* Modern Joplin - Features — ventana "Personalizar barra de botones" */
+/* Modern Joplin - Features — "Customize toolbar" window */
 html, body { height: 100%; margin: 0; }
 .mt-wrap { font-family: var(--joplin-font-family, system-ui, sans-serif); font-size: 13px; box-sizing: border-box; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 4px 6px; }
 .mt-help { margin: 0 0 10px 0; opacity: .75; line-height: 1.4; }

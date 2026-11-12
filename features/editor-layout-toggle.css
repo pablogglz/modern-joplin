@@ -1,5 +1,5 @@
 
-/* ---- 4. Botón Markdown / editor visual siempre debajo de atrás / adelante ---- */
+/* ---- 4. Markdown / rich text editor toggle always below back / forward ---- */
 div:has(> #CodeMirrorToolbar) { height: auto !important; }
 #CodeMirrorToolbar { height: auto !important; overflow: visible !important; display: grid !important; grid-template-columns: auto minmax(0, 1fr); column-gap: 4px; }
 #CodeMirrorToolbar > .group:first-child { grid-column: 1; grid-row: 1; }
