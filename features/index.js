@@ -775,10 +775,66 @@ async function collectFolderPinned(folderId) {
 	return out.sort(byOrder);
 }
 
-// Global pins can be in any notebook: all notes are scanned
+// ---- Index of pinned note ids, so we don't scan every note on each sync ----
+// One full scan at startup; after that only the notes that changed (Joplin's /events feed, which also
+// records changes that arrive through sync). If the feed can't be read, fall back to a full scan.
+const PinIndex = { ready: false, cursor: null, ids: { [PIN_KEY]: new Set(), [GLOBAL_KEY]: new Set() } };
+
+function pinIndexSet(n) {
+	for (const key of [PIN_KEY, GLOBAL_KEY]) {
+		if (n && !n.deleted_time && pinOrder(n.user_data, key, n.user_updated_time) !== null) PinIndex.ids[key].add(n.id);
+		else if (n) PinIndex.ids[key].delete(n.id);
+	}
+}
+
+async function pinIndexFull() {
+	const head = await joplin.data.get(['events']); // no cursor: returns the latest one
+	const notes = await pagedGet(['notes'], ['id', 'user_updated_time', 'user_data']);
+	PinIndex.ids = { [PIN_KEY]: new Set(), [GLOBAL_KEY]: new Set() };
+	for (const n of notes) pinIndexSet(n);
+	PinIndex.cursor = head ? head.cursor : null;
+	PinIndex.ready = PinIndex.cursor !== null && PinIndex.cursor !== undefined;
+}
+
+async function pinIndexUpdate() {
+	if (!PinIndex.ready) return pinIndexFull();
+	const changed = new Set();
+	try {
+		let cursor = PinIndex.cursor;
+		for (;;) {
+			const res = await joplin.data.get(['events'], { cursor });
+			for (const ev of res.items || []) if (ev.item_type === NOTE_TYPE) changed.add(ev.item_id);
+			if (res.cursor === undefined || res.cursor === null) throw new Error('no cursor');
+			cursor = res.cursor;
+			if (!res.has_more) break;
+		}
+		PinIndex.cursor = cursor;
+	} catch (e) {
+		return pinIndexFull();
+	}
+	for (const id of changed) {
+		try { pinIndexSet(await joplin.data.get(['notes', id], { fields: ['id', 'user_updated_time', 'user_data', 'deleted_time'] })); }
+		catch (e) { PinIndex.ids[PIN_KEY].delete(id); PinIndex.ids[GLOBAL_KEY].delete(id); } // deleted
+	}
+}
+
+// Fetch a few notes by id (missing or trashed ones are left out)
+async function getNotes(ids, fields) {
+	const out = [];
+	for (const id of ids) {
+		try {
+			const n = await joplin.data.get(['notes', id], { fields: [...fields, 'deleted_time'] });
+			if (n && !n.deleted_time) out.push(n);
+		} catch (e) { /* note deleted */ }
+	}
+	return out;
+}
+
+// Global pins can be in any notebook: they come from the pin index
 // (only on startup, after sync, and when pinning/unpinning a global note)
 async function collectGlobalPinned() {
-	const notes = await pagedGet(['notes'], ['id', 'title', 'parent_id', 'user_updated_time', 'user_data']);
+	await pinIndexUpdate();
+	const notes = await getNotes(PinIndex.ids[GLOBAL_KEY], ['id', 'title', 'parent_id', 'user_updated_time', 'user_data']);
 	const out = [];
 	for (const n of notes) {
 		const order = pinOrder(n.user_data, GLOBAL_KEY, n.user_updated_time);
@@ -902,16 +958,18 @@ async function setTag(key, id, on) {
 //  · After that: tag added on mobile -> pinned; tag removed on mobile -> unpinned.
 async function reconcileTags() {
 	if (!Pinned.useTags) return false;
-	const notes = await pagedGet(['notes'], ['id', 'user_updated_time', 'user_data']);
-	const byId = new Map(notes.map(n => [n.id, n]));
+	await pinIndexUpdate();
 	const ready = !!(await joplin.settings.value('pinnedTagsReady'));
 	let changed = false;
 	for (const key of [PIN_KEY, GLOBAL_KEY]) {
 		delete tagCache[key];
-		const pinned = new Set(notes.filter(n => pinOrder(n.user_data, key, n.user_updated_time) !== null).map(n => n.id));
-		const tag = await findTag(key, pinned.size > 0);
+		const tag = await findTag(key, PinIndex.ids[key].size > 0);
 		if (!tag) continue;
 		const tagged = new Set((await pagedGet(['tags', tag.id, 'notes'], ['id'])).map(n => n.id));
+		// Only the notes that are pinned or tagged matter: read just those
+		const notes = await getNotes(new Set([...PinIndex.ids[key], ...tagged]), ['id', 'user_updated_time', 'user_data']);
+		const byId = new Map(notes.map(n => [n.id, n]));
+		const pinned = new Set(notes.filter(n => pinOrder(n.user_data, key, n.user_updated_time) !== null).map(n => n.id));
 		let order = -Date.now();
 		for (const id of pinned) {
 			if (tagged.has(id)) {
