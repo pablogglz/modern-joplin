@@ -1,5 +1,5 @@
 #!/bin/sh
-# Empaqueta cada plugin en dist/<id>.jpl (un .jpl es un .tar)
+# Packages each plugin as dist/<id>.jpl (a .jpl is a .tar)
 set -e
 cd "$(dirname "$0")"
 mkdir -p dist

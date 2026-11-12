@@ -1,4 +1,4 @@
-# Empaqueta cada plugin en dist\<id>.jpl (un .jpl es un .tar). Uso: .\build.ps1
+# Packages each plugin as dist\<id>.jpl (a .jpl is a .tar). Usage: .\build.ps1
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 New-Item -ItemType Directory -Force dist | Out-Null

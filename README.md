@@ -1,28 +1,30 @@
 # Modern Joplin
 
-Dos plugins para Joplin de escritorio (3.0 o posterior).
+Two plugins for Joplin desktop (3.0 or later).
 
-| Carpeta | Plugin | Qué hace |
+| Folder | Plugin | What it does |
 |---|---|---|
-| `features/` | **Modern Joplin - Features** (`local.modernjoplin.features`) | Pestañas, notas fijadas (por carpeta y globales, también como etiquetas para el móvil), nota de hoy (Ctrl+Alt+D), índice de la nota, botón Aa de estilos, barra de botones personalizable y recordar la posición en cada nota. |
-| `theme/` | **Modern Joplin - Theme** (`local.modernnotes.joplin`) | Tema claro/oscuro con tipografía cuidada y barra lateral con jerarquía. |
+| `features/` | **Modern Joplin - Features** (`local.modernjoplin.features`) | Tabs, pinned notes (per notebook and global, also mirrored as tags for mobile), today's daily note (Ctrl+Alt+D), note outline, an Aa paragraph-style button, a customizable editor toolbar, and remembering your position in each note. |
+| `theme/` | **Modern Joplin - Theme** (`local.modernnotes.joplin`) | Light/dark theme with refined typography and a sidebar with clear hierarchy. |
 
-## Compilar
+The plugins' UI is available in English and Spanish (it follows Joplin's language).
 
-No hace falta Node ni dependencias: un `.jpl` es un `.tar` con los archivos del plugin.
+## Build
+
+No Node or dependencies needed: a `.jpl` file is just a `.tar` of the plugin's files.
 
 - Windows: `.\build.ps1`
 - Linux/macOS: `./build.sh`
 
-Los paquetes quedan en `dist/`.
+Packages are written to `dist/`.
 
-## Instalar o actualizar
+## Install or update
 
-1. Joplin › Herramientas › Opciones › Plugins › ⚙ › *Instalar desde archivo* y elige el `.jpl` de `dist/`
-   (o cópialo a la carpeta `plugins` del perfil de Joplin).
-2. Sube el `version` del `manifest.json` en cada cambio para que Joplin lo recargue.
-3. Reinicia Joplin.
+1. Joplin › Tools › Options › Plugins › ⚙ › *Install from file* and pick the `.jpl` from `dist/`
+   (or copy it into the `plugins` folder of your Joplin profile).
+2. Bump `version` in `manifest.json` on every change so Joplin reloads it.
+3. Restart Joplin.
 
-## Licencias
+## Licenses
 
-MIT (ver `LICENSE` de cada plugin). Iconos Lucide (ISC) y fuentes Inter, IBM Plex Sans y Source Serif 4 (OFL) en `*/licenses/`.
+MIT (see each plugin's `LICENSE`). Lucide icons (ISC) and the Inter, IBM Plex Sans and Source Serif 4 fonts (OFL) are in `*/licenses/`.
