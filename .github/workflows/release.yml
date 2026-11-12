@@ -1,0 +1,21 @@
+# On every tag like v2026.11.12: build both .jpl files and publish them as a GitHub release.
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./build.sh
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          F=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' features/manifest.json)
+          T=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' theme/manifest.json)
+          printf 'Download the two `.jpl` files below and install them in Joplin desktop (3.0 or later): **Tools › Options › Plugins › ⚙ › Install from file**, then restart Joplin.\n\n- `local.modernjoplin.features.jpl` — Modern Joplin - Features %s\n- `local.modernnotes.joplin.jpl` — Modern Joplin - Theme %s\n' "$F" "$T" > notes.md
+          gh release create "$GITHUB_REF_NAME" dist/*.jpl --title "Modern Joplin — Features $F · Theme $T" --notes-file notes.md

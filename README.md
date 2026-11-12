@@ -13,6 +13,10 @@ Two plugins for Joplin desktop (3.0 or later).
 
 The plugins' UI is available in English and Spanish (it follows Joplin's language).
 
+## Download
+
+Get the two `.jpl` files from the [latest release](../../releases/latest).
+
 ## Build
 
 No Node or dependencies needed: a `.jpl` file is just a `.tar` of the plugin's files.
@@ -20,7 +24,7 @@ No Node or dependencies needed: a `.jpl` file is just a `.tar` of the plugin's f
 - Windows: `.\build.ps1`
 - Linux/macOS: `./build.sh`
 
-Packages are written to `dist/`.
+Packages are written to `dist/`. Pushing a tag like `v2026.11.12` builds them and publishes a release automatically.
 
 ## Install or update
 
