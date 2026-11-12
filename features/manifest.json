@@ -2,7 +2,7 @@
   "manifest_version": 1,
   "id": "local.modernjoplin.features",
   "app_min_version": "3.0",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "name": "Modern Joplin - Features",
   "description": "Modern features for Joplin: tabs (preview, open, pinned), created/modified dates, global and per-notebook pinned notes like Apple Notes (also as tags for mobile), today's daily note button, a note outline panel, and an Aa paragraph-style button. / Funciones modernas para Joplin: pestañas (provisional, abiertas, fijadas), fechas de creación y modificación, notas fijadas globales y por carpeta como en Apple Notes (también como etiquetas para el móvil), botón de nota de hoy, índice de la nota y botón Aa de estilos de párrafo.",
   "author": "Modern Joplin contributors",

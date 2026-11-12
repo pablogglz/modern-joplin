@@ -138,13 +138,14 @@ const I18N = {
 		pinTags: "Etiquetar también las notas fijadas (\"# 📌 Fijadas (carpetas)\" y \"# 📌 Fijadas (globales)\") para verlas en el móvil",
 		pinTagsDesc: "Funciona en los dos sentidos: si en el móvil pones o quitas la etiqueta a una nota, al sincronizar el PC la fija o la desfija. Requiere reiniciar Joplin.",
 		dailySection: "Modern Joplin · Nota diaria",
-		dailySectionDesc: "Botón 📅 arriba a la derecha de la nota, Archivo > \"Nota de hoy\" o Ctrl+Alt+D: abre la nota de hoy y, si no existe, la crea (y sus carpetas) así: Notas diarias › 2026 › 2026-11 (Noviembre) › 2026-11-12.",
+		dailySectionDesc: "Botón 📅 arriba a la derecha de la nota, Archivo > \"Nota de hoy\" o Ctrl+Alt+D: abre la nota de hoy (Ctrl+Alt+Y: la de ayer) y, si no existe, la crea (y sus carpetas) así: Notas diarias › 2026 › 2026-11 (Noviembre) › 2026-11-12.",
 		dailyFolder: "Nombre de la carpeta de notas diarias",
 		dailyFolderDesc: "Se busca primero entre las libretas principales y luego en cualquier sitio. Si no existe, se crea como libreta principal. Si no hay coincidencia exacta, también vale una carpeta con prefijo numérico, p. ej. \"00) Notas diarias\".",
 		dailyDefault: "00) Notas diarias",
 		dailyStart: "Hora a la que empieza el día",
 		dailyStartDesc: "Por ejemplo, con 4, lo que escribas antes de las 4:00 cuenta como el día anterior.",
 		cmdDaily: "Nota de hoy",
+		cmdYesterday: "Nota de ayer",
 		outlineSection: "Modern Joplin · Índice",
 		outlineSectionDesc: "Panel con los encabezados de la nota abierta. Clic en uno = saltar a él (en el editor y en la vista previa). Mostrar / ocultar: botón ☰ arriba a la derecha de la nota, Ver > \"Mostrar / ocultar índice\" o Ctrl+Alt+O.",
 		outlineEnabled: "Activar el índice de la nota",
@@ -234,13 +235,14 @@ const I18N = {
 		pinTags: "Also tag pinned notes (\"# 📌 Pinned (notebooks)\" and \"# 📌 Pinned (global)\") so you can see them on your phone",
 		pinTagsDesc: "Works both ways: if you add or remove the tag on a note on your phone, the PC pins or unpins it after syncing. Requires restarting Joplin.",
 		dailySection: "Modern Joplin · Daily note",
-		dailySectionDesc: "📅 button at the top right of the note, File > \"Today's note\" or Ctrl+Alt+D: opens today's note and creates it (and its folders) if needed: Daily notes › 2026 › 2026-11 (November) › 2026-11-12.",
+		dailySectionDesc: "📅 button at the top right of the note, File > \"Today's note\" or Ctrl+Alt+D: opens today's note (Ctrl+Alt+Y: yesterday's) and creates it (and its folders) if needed: Daily notes › 2026 › 2026-11 (November) › 2026-11-12.",
 		dailyFolder: "Daily notes folder name",
 		dailyFolderDesc: "Searched first among top-level notebooks, then anywhere. If it doesn't exist it's created as a top-level notebook.",
 		dailyDefault: "Daily notes",
 		dailyStart: "Hour at which the day starts",
 		dailyStartDesc: "For example, with 4, anything before 4:00 counts as the previous day.",
 		cmdDaily: "Today's note",
+		cmdYesterday: "Yesterday's note",
 		outlineSection: "Modern Joplin · Outline",
 		outlineSectionDesc: "Panel with the headings of the open note. Click one = jump to it (in the editor and the preview). Show / hide: ☰ button at the top right of the note, View > \"Show / hide outline\" or Ctrl+Alt+O.",
 		outlineEnabled: "Enable the note outline",
@@ -1175,6 +1177,17 @@ async function startDaily() {
 	});
 	await joplin.views.toolbarButtons.create('modernJoplinDailyButton', 'modernJoplin.dailyNote', 'noteToolbar');
 	await joplin.views.menuItems.create('modernJoplinDailyMenu', 'modernJoplin.dailyNote', 'file', { accelerator: 'CmdOrCtrl+Alt+D' });
+	// Yesterday's note: same folders and rules, one day earlier (created if it doesn't exist)
+	await joplin.commands.register({
+		name: 'modernJoplin.yesterdayNote',
+		label: tr('cmdYesterday'),
+		iconName: 'fas fa-calendar-minus',
+		execute: async () => {
+			const id = await dailyNoteId(new Date(Date.now() - 86400000));
+			await joplin.commands.execute('openNote', id);
+		},
+	});
+	await joplin.views.menuItems.create('modernJoplinYesterdayMenu', 'modernJoplin.yesterdayNote', 'file', { accelerator: 'CmdOrCtrl+Alt+Y' });
 }
 
 // =====================================================================
