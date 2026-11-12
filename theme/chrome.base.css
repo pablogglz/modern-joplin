@@ -252,6 +252,13 @@ div:has(> .new-note-todo-buttons):has(> .search-and-sort) > .search-and-sort {
   border: none !important;
   overflow: hidden !important;
 }
+/* Compact list (Joplin's default, one line per note): no vertical padding, title centered.
+   With padding the title box ends up shorter than its line and descenders (g, p, y) get clipped. */
+.note-list-item-wrapper .note-list-item > .content:not(:has(.body)) {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  align-items: center !important;
+}
 .note-list-item-wrapper:hover .note-list-item > .content { background: var(--c-hover) !important; }
 .note-list-item-wrapper .note-list-item > .content.-selected { background: var(--c-sel) !important; }
 .note-list-item .content .title, .note-list-item .content .title span {

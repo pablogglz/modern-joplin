@@ -2,7 +2,7 @@
   "manifest_version": 1,
   "id": "local.modernnotes.joplin",
   "app_min_version": "3.0",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "name": "Modern Joplin - Theme",
   "description": "Clean, modern theme for Joplin: light/dark mode, refined typography and a sidebar with clear hierarchy. Configurable. Companion: Modern Joplin - Features. / Tema limpio y moderno para Joplin: modo claro/oscuro, tipografía cuidada y barra lateral con jerarquía. Configurable. Complemento: Modern Joplin - Features.",
   "author": "Modern Joplin contributors",
