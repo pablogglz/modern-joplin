@@ -24,7 +24,7 @@ No Node or dependencies needed: a `.jpl` file is just a `.tar` of the plugin's f
 - Windows: `.\build.ps1`
 - Linux/macOS: `./build.sh`
 
-Packages are written to `dist/`. Pushing a tag like `v2026.11.12` builds them and publishes a release automatically.
+Packages are written to `dist/`. To publish a release, run the *Release* workflow from the Actions tab (or push a tag like `v2026.11.12`).
 
 ## Install or update
 

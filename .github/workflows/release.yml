@@ -1,6 +1,8 @@
-# On every tag like v2026.11.12: build both .jpl files and publish them as a GitHub release.
+# Build both .jpl files and publish them as a GitHub release.
+# Run it from the Actions tab (Release › Run workflow), or push a tag like v2026.11.12.
 name: Release
 on:
+  workflow_dispatch:
   push:
     tags: ['v*']
 permissions:
@@ -18,4 +20,6 @@ jobs:
           F=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' features/manifest.json)
           T=$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' theme/manifest.json)
           printf 'Download the two `.jpl` files below and install them in Joplin desktop (3.0 or later): **Tools › Options › Plugins › ⚙ › Install from file**, then restart Joplin.\n\n- `local.modernjoplin.features.jpl` — Modern Joplin - Features %s\n- `local.modernnotes.joplin.jpl` — Modern Joplin - Theme %s\n' "$F" "$T" > notes.md
-          gh release create "$GITHUB_REF_NAME" dist/*.jpl --title "Modern Joplin — Features $F · Theme $T" --notes-file notes.md
+          TAG="$GITHUB_REF_NAME"
+          [ "$GITHUB_REF_TYPE" = tag ] || TAG="v$(date -u +%Y.%m.%d)-f$F-t$T"
+          gh release create "$TAG" dist/*.jpl --target "$GITHUB_SHA" --title "Modern Joplin — Features $F · Theme $T" --notes-file notes.md
