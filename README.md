@@ -6,6 +6,8 @@ Two plugins for Joplin desktop (3.0 or later).
 |---|---|
 | ![Modern Joplin in light mode](docs/screenshot-light.png) | ![Modern Joplin in dark mode](docs/screenshot-dark.png) |
 
+> **Note:** these screenshots were taken before Theme 3.5.1. In the compact note list, the bottom of letters like *g*, *p* and *y* is clipped (see "Q4 roadmap" or "Kickoff meeting"). This is fixed in the latest release; the screenshots haven't been updated yet.
+
 | Folder | Plugin | What it does |
 |---|---|---|
 | `features/` | **Modern Joplin - Features** (`local.modernjoplin.features`) | Tabs, pinned notes (per notebook and global, also mirrored as tags for mobile), today's and yesterday's daily notes (Ctrl+Alt+D / Ctrl+Alt+Y), note outline, an Aa paragraph-style button, a customizable editor toolbar, and remembering your position in each note. |
